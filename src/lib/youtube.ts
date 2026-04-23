@@ -135,3 +135,7 @@ export function parseDuration(duration: string): number {
   }
   return parts[0] || 0;
 }
+
+export function getYouTubeSearchUrl(query: string): string {
+  return `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+}
