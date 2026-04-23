@@ -10,6 +10,9 @@ export interface Video {
   creator_id: string | null;
   tags: string[];
   duration: string | null;
+  spotify_url: string | null;
+  apple_music_url: string | null;
+  youtube_music_url: string | null;
   is_featured: boolean;
   is_trending: boolean;
   view_count: number;

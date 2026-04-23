@@ -177,9 +177,30 @@ function VideoForm({ videoId, onClose }: VideoFormProps) {
   const [channelId, setChannelId] = useState(existing?.channel_id || '');
   const [tags, setTags] = useState(existing?.tags?.join(', ') || '');
   const [duration, setDuration] = useState(existing?.duration || '');
+  const [spotifyUrl, setSpotifyUrl] = useState(existing?.spotify_url || '');
+  const [appleMusicUrl, setAppleMusicUrl] = useState(existing?.apple_music_url || '');
+  const [youtubeMusicUrl, setYoutubeMusicUrl] = useState(existing?.youtube_music_url || '');
   const [isFeatured, setIsFeatured] = useState(existing?.is_featured || false);
   const [isTrending, setIsTrending] = useState(existing?.is_trending || false);
   const [fetchingInfo, setFetchingInfo] = useState(false);
+
+  // Update form when existing data loads
+  useEffect(() => {
+    if (existing) {
+      setYoutubeUrl(existing.youtube_url || '');
+      setTitle(existing.title || '');
+      setDescription(existing.description || '');
+      setCategoryId(existing.category_id || '');
+      setChannelId(existing.channel_id || '');
+      setTags(existing.tags?.join(', ') || '');
+      setDuration(existing.duration || '');
+      setSpotifyUrl(existing.spotify_url || '');
+      setAppleMusicUrl(existing.apple_music_url || '');
+      setYoutubeMusicUrl(existing.youtube_music_url || '');
+      setIsFeatured(existing.is_featured || false);
+      setIsTrending(existing.is_trending || false);
+    }
+  }, [existing]);
   
   const youtubeId = extractYouTubeId(youtubeUrl);
   const thumbnail = youtubeId ? getYouTubeThumbnailUrl(youtubeId) : '';
@@ -214,6 +235,9 @@ function VideoForm({ videoId, onClose }: VideoFormProps) {
       creator_id: channelId || null,
       tags: tags.split(',').map(t => t.trim()).filter(Boolean),
       duration: duration || null,
+      spotify_url: spotifyUrl || null,
+      apple_music_url: appleMusicUrl || null,
+      youtube_music_url: youtubeMusicUrl || null,
       is_featured: isFeatured,
       is_trending: isTrending,
     };
@@ -351,6 +375,43 @@ function VideoForm({ videoId, onClose }: VideoFormProps) {
               placeholder="e.g. 3:45"
               className="w-full px-4 py-3 bg-bg-tertiary rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-primary"
             />
+          </div>
+          
+          {/* Music Links */}
+          <div className="border-t border-border-subtle pt-4 mt-4">
+            <h3 className="text-sm font-medium text-text-secondary mb-3">Music Streaming Links</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs text-text-muted mb-1">Spotify</label>
+                <input
+                  type="url"
+                  value={spotifyUrl}
+                  onChange={(e) => setSpotifyUrl(e.target.value)}
+                  placeholder="https://open.spotify.com/..."
+                  className="w-full px-3 py-2 bg-bg-tertiary rounded-lg text-text-primary text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-text-muted mb-1">Apple Music</label>
+                <input
+                  type="url"
+                  value={appleMusicUrl}
+                  onChange={(e) => setAppleMusicUrl(e.target.value)}
+                  placeholder="https://music.apple.com/..."
+                  className="w-full px-3 py-2 bg-bg-tertiary rounded-lg text-text-primary text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-text-muted mb-1">YouTube Music</label>
+                <input
+                  type="url"
+                  value={youtubeMusicUrl}
+                  onChange={(e) => setYoutubeMusicUrl(e.target.value)}
+                  placeholder="https://music.youtube.com/..."
+                  className="w-full px-3 py-2 bg-bg-tertiary rounded-lg text-text-primary text-sm"
+                />
+              </div>
+            </div>
           </div>
           
           {/* Toggles */}

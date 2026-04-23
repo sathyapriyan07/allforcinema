@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 
 export function useVideos(options?: {
   categoryId?: string;
-  creatorId?: string;
+  channelId?: string;
   featured?: boolean;
   trending?: boolean;
   limit?: number;
@@ -25,8 +25,8 @@ export function useVideos(options?: {
       if (options?.categoryId) {
         query = query.eq('category_id', options.categoryId);
       }
-      if (options?.creatorId) {
-        query = query.eq('creator_id', options.creatorId);
+      if (options?.channelId) {
+        query = query.eq('channel_id', options.channelId);
       }
       if (options?.featured) {
         query = query.eq('is_featured', true);
@@ -49,12 +49,12 @@ export function useVideos(options?: {
       const enriched = await Promise.all((videos || []).map(async (v: Video) => {
         const [catRes, crRes] = await Promise.all([
           v.category_id ? supabase.from('categories').select('*').eq('id', v.category_id).single() : Promise.resolve({ data: null }),
-          v.creator_id ? supabase.from('creators').select('*').eq('id', v.creator_id).single() : Promise.resolve({ data: null })
+          v.channel_id ? supabase.from('channels').select('*').eq('id', v.channel_id).single() : Promise.resolve({ data: null })
         ]);
         return {
           ...v,
           category: catRes.data as Category | null,
-          creator: crRes.data as Channel | null
+          channel: crRes.data as Channel | null
         };
       }));
 
@@ -63,7 +63,7 @@ export function useVideos(options?: {
       setError((e as Error).message);
     }
     setLoading(false);
-  }, [options?.categoryId, options?.creatorId, options?.featured, options?.trending, options?.limit, options?.orderBy, options?.ascending]);
+  }, [options?.categoryId, options?.channelId, options?.featured, options?.trending, options?.limit, options?.orderBy, options?.ascending]);
 
   useEffect(() => {
     fetchVideos();
@@ -102,13 +102,13 @@ export function useVideo(id: string) {
 
         const [catRes, crRes] = await Promise.all([
           v.category_id ? supabase.from('categories').select('*').eq('id', v.category_id).single() : Promise.resolve({ data: null }),
-          v.creator_id ? supabase.from('creators').select('*').eq('id', v.creator_id).single() : Promise.resolve({ data: null })
+          v.channel_id ? supabase.from('channels').select('*').eq('id', v.channel_id).single() : Promise.resolve({ data: null })
         ]);
 
         setVideo({
           ...v,
           category: catRes.data as Category | null,
-          creator: crRes.data as Channel | null
+          channel: crRes.data as Channel | null
         });
       } catch (e) {
         setError((e as Error).message);
@@ -160,7 +160,7 @@ export function useChannels() {
       setError(null);
       try {
         const { data: crs, error: err } = await supabase
-          .from('creators')
+          .from('channels')
           .select('*')
           .order('name');
         if (err) throw err;
@@ -173,7 +173,7 @@ export function useChannels() {
     fetch();
   }, []);
 
-  return { creators: data, loading, error };
+  return { channels: data, loading, error };
 }
 
 export function usePlaylist(id: string) {
@@ -311,12 +311,12 @@ export function useSearch(query: string) {
         const enriched = await Promise.all((videos || []).map(async (v: Video) => {
           const [catRes, crRes] = await Promise.all([
             v.category_id ? supabase.from('categories').select('*').eq('id', v.category_id).single() : Promise.resolve({ data: null }),
-            v.creator_id ? supabase.from('creators').select('*').eq('id', v.creator_id).single() : Promise.resolve({ data: null })
+            v.channel_id ? supabase.from('channels').select('*').eq('id', v.channel_id).single() : Promise.resolve({ data: null })
           ]);
           return {
             ...v,
             category: catRes.data as Category | null,
-            creator: crRes.data as Channel | null
+            channel: crRes.data as Channel | null
           };
         }));
 

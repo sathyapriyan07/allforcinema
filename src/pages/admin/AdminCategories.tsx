@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAdminCategories } from '../../hooks/useVideos';
 import { slugify } from '../../lib/utils';
 import type { Category } from '../../types';
@@ -140,6 +140,17 @@ function CategoryForm({ categoryId, onClose }: CategoryFormProps) {
   const [description, setDescription] = useState(existing?.description || '');
   const [color, setColor] = useState(existing?.color || '#e50914');
   const [icon, setIcon] = useState(existing?.icon || '');
+
+  // Update form when existing data loads
+  useEffect(() => {
+    if (existing) {
+      setName(existing.name || '');
+      setSlug(existing.slug || '');
+      setDescription(existing.description || '');
+      setColor(existing.color || '#e50914');
+      setIcon(existing.icon || '');
+    }
+  }, [existing]);
   
   const autoSlug = name && !existing ? slugify(name) : slug;
 

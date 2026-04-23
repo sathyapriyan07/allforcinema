@@ -136,6 +136,18 @@ function ChannelForm({ channelId, onClose }: ChannelFormProps) {
   const [isFeatured, setIsFeatured] = useState(existing?.is_featured || false);
   const [fetchingInfo, setFetchingInfo] = useState(false);
 
+  // Update form when existing data loads
+  useEffect(() => {
+    if (existing) {
+      setName(existing.name || '');
+      setYoutubeChannelUrl(existing.youtube_channel_url || '');
+      setAvatar(existing.avatar || '');
+      setBio(existing.bio || '');
+      setSubscriberCount(existing.subscriber_count || '');
+      setIsFeatured(existing.is_featured || false);
+    }
+  }, [existing]);
+
   // Auto-fetch channel info when URL changes
   useEffect(() => {
     if (youtubeChannelUrl && !existing && !name) {

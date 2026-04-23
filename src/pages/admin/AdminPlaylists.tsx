@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAdminPlaylists, useAdminVideos } from '../../hooks/useVideos';
 import type { Playlist } from '../../types';
@@ -147,6 +147,16 @@ function PlaylistForm({ playlistId, onClose }: PlaylistFormProps) {
   const [isFeatured, setIsFeatured] = useState(existing?.is_featured || false);
   const [selectedVideos, setSelectedVideos] = useState<string[]>([]);
   const [showVideoSelector, setShowVideoSelector] = useState(false);
+
+  // Update form when existing data loads
+  useEffect(() => {
+    if (existing) {
+      setTitle(existing.title || '');
+      setDescription(existing.description || '');
+      setCoverImage(existing.cover_image || '');
+      setIsFeatured(existing.is_featured || false);
+    }
+  }, [existing]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
