@@ -143,7 +143,7 @@ export function VideoDetailPage() {
               {loadingRelated
                 ? Array.from({ length: 6 }).map((_, i) => <VideoCardSkeleton key={i} />)
                 : otherVideos.map((v) => (
-                    <VideoCard key={v.id} video={v} showCategory={false} />
+                    <VideoCard key={v.id} video={v} />
                   ))}
             </div>
           </div>

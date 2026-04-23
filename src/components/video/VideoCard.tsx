@@ -5,11 +5,10 @@ import type { Video } from '../../types';
 interface VideoCardProps {
   video: Video;
   className?: string;
-  showCategory?: boolean;
   showDuration?: boolean;
 }
 
-export function VideoCard({ video, className, showCategory = false, showDuration = true }: VideoCardProps) {
+export function VideoCard({ video, className, showDuration = true }: VideoCardProps) {
   const thumbnail = video.thumbnail || getYouTubeThumbnailUrl(video.youtube_id);
 
   return (
