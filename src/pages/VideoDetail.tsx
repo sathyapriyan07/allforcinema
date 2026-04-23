@@ -127,7 +127,7 @@ export function VideoDetailPage() {
 
             {/* Video Info */}
             <div>
-              <h1 className="text-3xl font-heading font-bold text-text-primary">
+              <h1 className="text-2xl font-heading font-bold text-text-primary">
                 {video.title}
               </h1>
               
