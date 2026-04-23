@@ -68,6 +68,7 @@ export function Navbar() {
   const navLinks = [
     { to: '/categories', label: 'Categories' },
     { to: '/playlists', label: 'Playlists' },
+    { to: '/channels', label: 'Channels' },
     { to: '/discover', label: 'Discover' },
   ];
 

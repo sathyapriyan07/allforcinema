@@ -17,6 +17,13 @@ export interface YouTubeVideoInfo {
   thumbnail_url: string;
 }
 
+export interface YouTubeChannelInfo {
+  name: string;
+  avatar_url: string;
+  banner_url: string;
+  description: string;
+}
+
 export async function getYouTubeVideoInfo(url: string): Promise<YouTubeVideoInfo | null> {
   const videoId = extractYouTubeId(url);
   if (!videoId) return null;
@@ -64,11 +71,42 @@ export async function getYouTubeVideoInfo(url: string): Promise<YouTubeVideoInfo
   };
 }
 
+export async function getYouTubeChannelInfo(channelUrl: string): Promise<YouTubeChannelInfo | null> {
+  // Extract channel ID or handle various YouTube channel URL formats
+  const patterns = [
+    /youtube\.com\/@([a-zA-Z0-9_-]+)/,
+    /youtube\.com\/channel\/([a-zA-Z0-9_-]+)/,
+    /youtube\.com\/c\/([a-zA-Z0-9_-]+)/,
+    /youtube\.com\/user\/([a-zA-Z0-9_-]+)/,
+  ];
+
+  let channelName = '';
+  
+  for (const pattern of patterns) {
+    const match = channelUrl.match(pattern);
+    if (match) {
+      channelName = match[1];
+      break;
+    }
+  }
+
+  if (!channelName) return null;
+
+  // Return with default avatar based on channel name
+  return {
+    name: channelName,
+    avatar_url: `https://ui-avatars.com/api/?name=${encodeURIComponent(channelName)}&background=random&size=128`,
+    banner_url: '',
+    description: '',
+  };
+}
+
 export function getYouTubeEmbedUrl(youtubeId: string, autoplay = false): string {
   const params = new URLSearchParams();
   if (autoplay) params.set('autoplay', '1');
   params.set('rel', '0');
   params.set('modestbranding', '1');
+  params.set('playsinline', '0');
   return `https://www.youtube.com/embed/${youtubeId}?${params.toString()}`;
 }
 

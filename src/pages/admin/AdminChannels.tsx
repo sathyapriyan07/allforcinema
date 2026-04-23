@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAdminChannels } from '../../hooks/useVideos';
+import { getYouTubeChannelInfo } from '../../lib/youtube';
 import type { Channel } from '../../types';
 
 export function AdminChannelsPage() {
@@ -133,6 +134,22 @@ function ChannelForm({ channelId, onClose }: ChannelFormProps) {
   const [bio, setBio] = useState(existing?.bio || '');
   const [subscriberCount, setSubscriberCount] = useState(existing?.subscriber_count || '');
   const [isFeatured, setIsFeatured] = useState(existing?.is_featured || false);
+  const [fetchingInfo, setFetchingInfo] = useState(false);
+
+  // Auto-fetch channel info when URL changes
+  useEffect(() => {
+    if (youtubeChannelUrl && !existing && !name) {
+      setFetchingInfo(true);
+      getYouTubeChannelInfo(youtubeChannelUrl).then(info => {
+        if (info?.name) {
+          setName(info.name);
+          if (info.avatar_url) setAvatar(info.avatar_url);
+          if (info.description) setBio(info.description);
+        }
+        setFetchingInfo(false);
+      });
+    }
+  }, [youtubeChannelUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -184,6 +201,7 @@ function ChannelForm({ channelId, onClose }: ChannelFormProps) {
               placeholder="https://youtube.com/@channel"
               className="w-full px-4 py-3 bg-bg-tertiary rounded-lg text-text-primary"
             />
+            {fetchingInfo && <p className="text-sm text-accent-primary mt-1">Fetching channel info...</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-2">Avatar URL</label>

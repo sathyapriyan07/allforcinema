@@ -12,6 +12,7 @@ import { AdminVideosPage } from './pages/admin/AdminVideos';
 import { AdminPlaylistsPage } from './pages/admin/AdminPlaylists';
 import { AdminCategoriesPage } from './pages/admin/AdminCategories';
 import { AdminChannelsPage } from './pages/admin/AdminChannels';
+import { ChannelPage, ChannelsPage } from './pages/ChannelDetail';
 import { AuthProvider, useAuthContext } from './hooks/AuthContext';
 
 function ProtectedAdminRoute({ children }: { children: React.ReactNode }) {
@@ -40,6 +41,8 @@ function App() {
               <Route path="/category/:slug" element={<CategoryPage />} />
               <Route path="/discover" element={<DiscoverPage />} />
               <Route path="/search" element={<SearchPage />} />
+              <Route path="/channels" element={<ChannelsPage />} />
+              <Route path="/channel/:id" element={<ChannelPage />} />
               
 {/* Admin Routes */}
             <Route path="/admin" element={<ProtectedAdminRoute><AdminLayout /></ProtectedAdminRoute>}>

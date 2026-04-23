@@ -133,3 +133,22 @@ h1, h2, h3, h4, h5, h6 {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
+/* Force landscape when video is fullscreen */
+@media screen and (orientation: portrait) and (min-width: 768px) {
+  html:has(iframe:-webkit-full-screen) {
+    transform: rotate(90deg);
+    transform-origin: top left;
+    width: 100vh;
+    height: 100vw;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  html:has(iframe:-webkit-full-screen) body {
+    width: 100vh;
+    height: 100vw;
+    overflow: hidden;
+  }
+}
