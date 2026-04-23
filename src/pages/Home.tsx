@@ -102,7 +102,7 @@ export function HomePage() {
                 View All
               </Link>
             </div>
-            <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 md:grid md:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 md:overflow-visible md:mx-0 md:px-0 md:pb-0">
+            <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 -mx-4 px-4 md:grid md:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 md:overflow-visible md:mx-0 md:px-0 md:pb-0">
               {loadingFeatured
                 ? Array.from({ length: 6 }).map((_, i) => <div key={i} className="w-[160px] md:w-auto flex-shrink-0"><VideoCardSkeleton /></div>)
                 : featured.slice(0, 6).map((video: Video) => (
@@ -173,7 +173,7 @@ export function HomePage() {
                 View All
               </Link>
             </div>
-            <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 md:grid md:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 md:overflow-visible md:mx-0 md:px-0 md:pb-0">
+            <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 -mx-4 px-4 md:grid md:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 md:overflow-visible md:mx-0 md:px-0 md:pb-0">
               {loadingRecent
                 ? Array.from({ length: 10 }).map((_, i) => <div key={i} className="w-[160px] md:w-auto flex-shrink-0"><VideoCardSkeleton /></div>)
                 : recent.slice(0, 10).map((video: Video) => (

@@ -226,7 +226,7 @@ export function VideoDetailPage() {
             <h2 className="text-xl font-heading font-bold text-text-primary">
               Related Videos
             </h2>
-            <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:pb-0">
+            <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:pb-0">
               {loadingRelated
                 ? Array.from({ length: 6 }).map((_, i) => (
                     <div key={i} className="w-[280px] md:w-full flex-shrink-0">
