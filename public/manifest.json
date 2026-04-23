@@ -1,0 +1,16 @@
+{
+  "name": "AllForCinema",
+  "short_name": "AFC",
+  "description": "Discover movies and videos",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
