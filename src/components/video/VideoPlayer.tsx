@@ -36,7 +36,7 @@ export function VideoPlayer({ video, autoplay = false, onEnded }: VideoPlayerPro
         src={embedUrl}
         title={video.title}
         className="w-full h-full"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; playsinline"
         allowFullScreen
       />
     </div>
