@@ -89,9 +89,9 @@ export function PlaylistQueue({
               )}>
                 {video.title}
               </h4>
-              {video.creator && (
+              {video.channel && (
                 <p className="text-xs text-text-muted mt-0.5">
-                  {video.creator.name}
+                  {video.channel.name}
                 </p>
               )}
             </div>

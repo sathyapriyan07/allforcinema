@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useAdminVideos, useAdminCategories } from '../../hooks/useVideos';
-import { extractYouTubeId, getYouTubeThumbnailUrl } from '../../lib/youtube';
+import { useState, useEffect } from 'react';
+import { useAdminVideos, useAdminCategories, useAdminChannels } from '../../hooks/useVideos';
+import { extractYouTubeId, getYouTubeThumbnailUrl, getYouTubeVideoInfo } from '../../lib/youtube';
 import type { Video } from '../../types';
 
 export function AdminVideosPage() {
@@ -166,6 +166,7 @@ interface VideoFormProps {
 function VideoForm({ videoId, onClose }: VideoFormProps) {
   const { videos, addVideo, updateVideo } = useAdminVideos();
   const { categories } = useAdminCategories();
+  const { channels } = useAdminChannels();
   
   const existing = videoId ? videos.find(v => v.id === videoId) : null;
   
@@ -173,13 +174,29 @@ function VideoForm({ videoId, onClose }: VideoFormProps) {
   const [title, setTitle] = useState(existing?.title || '');
   const [description, setDescription] = useState(existing?.description || '');
   const [categoryId, setCategoryId] = useState(existing?.category_id || '');
+  const [channelId, setChannelId] = useState(existing?.channel_id || '');
   const [tags, setTags] = useState(existing?.tags?.join(', ') || '');
   const [duration, setDuration] = useState(existing?.duration || '');
   const [isFeatured, setIsFeatured] = useState(existing?.is_featured || false);
   const [isTrending, setIsTrending] = useState(existing?.is_trending || false);
+  const [fetchingInfo, setFetchingInfo] = useState(false);
   
   const youtubeId = extractYouTubeId(youtubeUrl);
   const thumbnail = youtubeId ? getYouTubeThumbnailUrl(youtubeId) : '';
+
+  // Auto-fetch video info when URL changes
+  useEffect(() => {
+    if (youtubeUrl && !existing && !title) {
+      setFetchingInfo(true);
+      getYouTubeVideoInfo(youtubeUrl).then(info => {
+        if (info?.title) {
+          setTitle(info.title);
+          setDescription(info.description || '');
+        }
+        setFetchingInfo(false);
+      });
+    }
+  }, [youtubeUrl]);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -193,7 +210,8 @@ function VideoForm({ videoId, onClose }: VideoFormProps) {
       youtube_id: youtubeId,
       thumbnail,
       category_id: categoryId || null,
-      creator_id: null,
+      channel_id: channelId || null,
+      creator_id: channelId || null,
       tags: tags.split(',').map(t => t.trim()).filter(Boolean),
       duration: duration || null,
       is_featured: isFeatured,
@@ -232,7 +250,8 @@ function VideoForm({ videoId, onClose }: VideoFormProps) {
               className="w-full px-4 py-3 bg-bg-tertiary rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-primary"
               required
             />
-            {thumbnail && (
+            {fetchingInfo && <p className="text-sm text-accent-primary mt-1">Fetching video info...</p>}
+            {thumbnail && !fetchingInfo && (
               <div className="mt-2">
                 <img src={thumbnail} alt="Preview" className="w-48 rounded" />
               </div>
@@ -282,6 +301,25 @@ function VideoForm({ videoId, onClose }: VideoFormProps) {
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          {/* Channel */}
+          <div>
+            <label className="block text-sm font-medium text-text-secondary mb-2">
+              Channel
+            </label>
+            <select
+              value={channelId}
+              onChange={(e) => setChannelId(e.target.value)}
+              className="w-full px-4 py-3 bg-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            >
+              <option value="">Select channel</option>
+              {channels.map((ch) => (
+                <option key={ch.id} value={ch.id}>
+                  {ch.name}
                 </option>
               ))}
             </select>

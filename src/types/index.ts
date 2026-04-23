@@ -6,6 +6,7 @@ export interface Video {
   youtube_id: string;
   thumbnail: string | null;
   category_id: string | null;
+  channel_id: string | null;
   creator_id: string | null;
   tags: string[];
   duration: string | null;
@@ -15,7 +16,7 @@ export interface Video {
   created_at: string;
   updated_at: string;
   category?: Category | null;
-  creator?: Creator | null;
+  channel?: Channel | null;
 }
 
 export interface Category {
@@ -28,13 +29,17 @@ export interface Category {
   created_at: string;
 }
 
-export interface Creator {
+export interface Channel {
   id: string;
   name: string;
   youtube_channel_url: string | null;
   avatar: string | null;
   bio: string | null;
+  subscriber_count: string | null;
+  banner_image: string | null;
+  is_featured: boolean;
   created_at: string;
+  updated_at: string;
 }
 
 export interface Playlist {

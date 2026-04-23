@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { Video, Category, Creator, Playlist } from '../types';
+import type { Video, Category, Channel, Playlist } from '../types';
 import { supabase } from '../lib/supabase';
 
 export function useVideos(options?: {
@@ -54,7 +54,7 @@ export function useVideos(options?: {
         return {
           ...v,
           category: catRes.data as Category | null,
-          creator: crRes.data as Creator | null
+          creator: crRes.data as Channel | null
         };
       }));
 
@@ -108,7 +108,7 @@ export function useVideo(id: string) {
         setVideo({
           ...v,
           category: catRes.data as Category | null,
-          creator: crRes.data as Creator | null
+          creator: crRes.data as Channel | null
         });
       } catch (e) {
         setError((e as Error).message);
@@ -149,8 +149,8 @@ export function useCategories() {
   return { categories: data, loading, error };
 }
 
-export function useCreators() {
-  const [data, setData] = useState<Creator[]>([]);
+export function useChannels() {
+  const [data, setData] = useState<Channel[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -316,7 +316,7 @@ export function useSearch(query: string) {
           return {
             ...v,
             category: catRes.data as Category | null,
-            creator: crRes.data as Creator | null
+            creator: crRes.data as Channel | null
           };
         }));
 
@@ -533,4 +533,57 @@ export function useAdminCategories() {
   }, []);
 
   return { categories: data, loading, refetch: fetch, addCategory, updateCategory, deleteCategory };
+}
+
+export function useAdminChannels() {
+  const [data, setData] = useState<Channel[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetch = useCallback(async () => {
+    setLoading(true);
+    const { data: channels, error } = await supabase
+      .from('channels')
+      .select('*')
+      .order('name');
+    if (error) {
+      console.error(error);
+    }
+    setData(channels || []);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { fetch(); }, [fetch]);
+
+  const addChannel = useCallback(async (channel: Omit<Channel, 'id' | 'created_at' | 'updated_at'>) => {
+    const { data: newChannel, error } = await supabase
+      .from('channels')
+      .insert(channel)
+      .select()
+      .single();
+    if (error) throw error;
+    if (newChannel) {
+      setData(prev => [...prev, newChannel].sort((a, b) => a.name.localeCompare(b.name)));
+    }
+    return newChannel;
+  }, []);
+
+  const updateChannel = useCallback(async (id: string, updates: Partial<Channel>) => {
+    const { data: updated, error } = await supabase
+      .from('channels')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single();
+    if (error) throw error;
+    setData(prev => prev.map(c => c.id === id ? updated : c).sort((a, b) => a.name.localeCompare(b.name)));
+    return updated;
+  }, []);
+
+  const deleteChannel = useCallback(async (id: string) => {
+    const { error } = await supabase.from('channels').delete().eq('id', id);
+    if (error) throw error;
+    setData(prev => prev.filter(c => c.id !== id));
+  }, []);
+
+  return { channels: data, loading, refetch: fetch, addChannel, updateChannel, deleteChannel };
 }

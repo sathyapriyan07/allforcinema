@@ -11,6 +11,59 @@ export function extractYouTubeId(url: string): string | null {
   return null;
 }
 
+export interface YouTubeVideoInfo {
+  title: string;
+  description: string;
+  thumbnail_url: string;
+}
+
+export async function getYouTubeVideoInfo(url: string): Promise<YouTubeVideoInfo | null> {
+  const videoId = extractYouTubeId(url);
+  if (!videoId) return null;
+
+  const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+  
+  // Use noembed API - provides title and author
+  try {
+    const response = await fetch(
+      `https://noembed.com/embed?url=${encodeURIComponent(url)}&width=640`
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        title: data.title || '',
+        description: data.description || data.author_name || '',
+        thumbnail_url: data.thumbnail_url || thumbnailUrl,
+      };
+    }
+  } catch {
+    // Fallback
+  }
+  
+  // Fallback to YouTube oembed
+  try {
+    const response = await fetch(
+      `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        title: data.title || '',
+        description: data.author_name || '',
+        thumbnail_url: thumbnailUrl,
+      };
+    }
+  } catch {
+    // Fallback
+  }
+  
+  return {
+    title: '',
+    description: '',
+    thumbnail_url: thumbnailUrl,
+  };
+}
+
 export function getYouTubeEmbedUrl(youtubeId: string, autoplay = false): string {
   const params = new URLSearchParams();
   if (autoplay) params.set('autoplay', '1');

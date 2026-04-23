@@ -102,24 +102,24 @@ export function VideoDetailPage() {
                 </div>
               )}
 
-              {video.creator && (
+              {video.channel && (
                 <div className="mt-6 p-4 bg-bg-secondary rounded-xl flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-accent-primary flex items-center justify-center text-white font-bold">
-                    {video.creator.name.charAt(0)}
+                    {video.channel.name.charAt(0)}
                   </div>
                   <div className="flex-1">
                     <h3 className="font-medium text-text-primary">
-                      {video.creator.name}
+                      {video.channel.name}
                     </h3>
-                    {video.creator.bio && (
+                    {video.channel.bio && (
                       <p className="text-sm text-text-muted">
-                        {video.creator.bio}
+                        {video.channel.bio}
                       </p>
                     )}
                   </div>
-                  {video.creator.youtube_channel_url && (
+                  {video.channel.youtube_channel_url && (
                     <a
-                      href={video.creator.youtube_channel_url}
+                      href={video.channel.youtube_channel_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-2 bg-bg-tertiary rounded-lg hover:bg-accent-primary transition-colors"

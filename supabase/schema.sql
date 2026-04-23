@@ -18,15 +18,19 @@ CREATE TABLE IF NOT EXISTS categories (
 );
 
 -- ============================================
--- CREATORS TABLE
+-- CHANNELS TABLE (formerly creators)
 -- ============================================
-CREATE TABLE IF NOT EXISTS creators (
+CREATE TABLE IF NOT EXISTS channels (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
   youtube_channel_url TEXT,
   avatar TEXT,
   bio TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  subscriber_count TEXT,
+  banner_image TEXT,
+  is_featured BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- ============================================
@@ -40,7 +44,8 @@ CREATE TABLE IF NOT EXISTS videos (
   youtube_id TEXT NOT NULL UNIQUE,
   thumbnail TEXT,
   category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
-  creator_id UUID REFERENCES creators(id) ON DELETE SET NULL,
+  channel_id UUID REFERENCES channels(id) ON DELETE SET NULL,
+  creator_id UUID REFERENCES channels(id) ON DELETE SET NULL,
   tags TEXT[] DEFAULT '{}',
   duration TEXT,
   is_featured BOOLEAN DEFAULT false,
