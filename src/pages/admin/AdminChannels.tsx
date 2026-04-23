@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAdminChannels } from '../../hooks/useVideos';
 import { getYouTubeChannelInfo } from '../../lib/youtube';
+import { supabase } from '../../lib/supabase';
 import type { Channel } from '../../types';
 
 export function AdminChannelsPage() {
@@ -216,14 +217,61 @@ function ChannelForm({ channelId, onClose }: ChannelFormProps) {
             {fetchingInfo && <p className="text-sm text-accent-primary mt-1">Fetching channel info...</p>}
           </div>
           <div>
-            <label className="block text-sm font-medium text-text-secondary mb-2">Avatar URL</label>
-            <input
-              type="url"
-              value={avatar}
-              onChange={(e) => setAvatar(e.target.value)}
-              placeholder="https://..."
-              className="w-full px-4 py-3 bg-bg-tertiary rounded-lg text-text-primary"
-            />
+            <label className="block text-sm font-medium text-text-secondary mb-2">Avatar</label>
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-full overflow-hidden bg-bg-tertiary flex items-center justify-center">
+                {avatar ? (
+                  <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <svg className="w-8 h-8 text-text-muted" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                  </svg>
+                )}
+              </div>
+              <div className="flex-1">
+                <input
+                  type="url"
+                  value={avatar}
+                  onChange={(e) => setAvatar(e.target.value)}
+                  placeholder="Paste URL or upload"
+                  className="w-full px-3 py-2 bg-bg-tertiary rounded-lg text-text-primary text-sm mb-2"
+                />
+                <label className="inline-flex items-center gap-2 px-3 py-1.5 bg-bg-tertiary hover:bg-border-subtle text-text-secondary text-sm rounded-lg cursor-pointer">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                  </svg>
+                  Upload Image
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      
+                      const fileExt = file.name.split('.').pop();
+                      const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+                      const filePath = `avatars/${fileName}`;
+                      
+                      const { error: uploadError } = await supabase.storage
+                        .from('channel-assets')
+                        .upload(filePath, file);
+                      
+                      if (uploadError) {
+                        alert('Upload failed: ' + uploadError.message);
+                        return;
+                      }
+                      
+                      const { data: { publicUrl } } = supabase.storage
+                        .from('channel-assets')
+                        .getPublicUrl(filePath);
+                      
+                      setAvatar(publicUrl);
+                    }}
+                  />
+                </label>
+              </div>
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-2">Subscriber Count</label>

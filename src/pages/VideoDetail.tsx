@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
+import { useState } from 'react';
 import { useVideo, useVideos } from '../hooks/useVideos';
 import { VideoPlayer } from '../components/video/VideoPlayer';
 import { VideoCard, VideoCardSkeleton } from '../components/video/VideoCard';
@@ -6,10 +7,15 @@ import { VideoCard, VideoCardSkeleton } from '../components/video/VideoCard';
 export function VideoDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { video, loading, error } = useVideo(id || '');
-  const { videos: related, loading: loadingRelated } = useVideos({
+  const { videos: categoryVideos, loading: loadingCategory } = useVideos({
     categoryId: video?.category_id ?? undefined,
     limit: 6,
   });
+  const { videos: channelVideos, loading: loadingChannel } = useVideos({
+    channelId: video?.channel_id ?? undefined,
+    limit: 6,
+  });
+  const [showDescription, setShowDescription] = useState(false);
 
   if (loading) {
     return (
@@ -44,7 +50,11 @@ export function VideoDetailPage() {
     );
   }
 
-  const otherVideos = related.filter(v => v.id !== video.id).slice(0, 6);
+  const otherVideos = [...(categoryVideos || []), ...(channelVideos || [])]
+    .filter((v, index, self) => self.findIndex(x => x.id === v.id) === index)
+    .filter(v => v.id !== video.id)
+    .slice(0, 6);
+  const loadingRelated = loadingCategory || loadingChannel;
 
   return (
     <div className="min-h-screen pt-20">
@@ -60,11 +70,13 @@ export function VideoDetailPage() {
               href={video.youtube_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-gray-200 text-black font-medium rounded-lg transition-colors"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8-4.003z"/>
-              </svg>
+              <img 
+                src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png" 
+                alt="YouTube" 
+                className="w-5 h-4 object-contain"
+              />
               Watch on YouTube
             </a>
 
@@ -141,9 +153,19 @@ export function VideoDetailPage() {
               </div>
 
               {video.description && (
-                <p className="mt-4 text-text-secondary leading-relaxed">
-                  {video.description}
-                </p>
+                <>
+                  <button
+                    onClick={() => setShowDescription(!showDescription)}
+                    className="mt-4 text-sm font-medium text-accent-primary hover:underline"
+                  >
+                    {showDescription ? 'Hide Description' : 'Show Description'}
+                  </button>
+                  {showDescription && (
+                    <p className="mt-2 text-text-secondary leading-relaxed">
+                      {video.description}
+                    </p>
+                  )}
+                </>
               )}
 
               {video.tags && video.tags.length > 0 && (
@@ -161,9 +183,13 @@ export function VideoDetailPage() {
               )}
 
               {video.channel && (
-                <div className="mt-6 p-4 bg-bg-secondary rounded-xl flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-accent-primary flex items-center justify-center text-white font-bold">
-                    {video.channel.name.charAt(0)}
+                <Link to={`/channel/${video.channel.id}`} className="mt-6 p-4 bg-bg-secondary rounded-xl flex items-center gap-4 hover:bg-bg-tertiary transition-colors">
+                  <div className="w-12 h-12 rounded-full bg-accent-primary flex items-center justify-center text-white font-bold overflow-hidden">
+                    {video.channel.avatar ? (
+                      <img src={video.channel.avatar} alt={video.channel.name} className="w-full h-full object-cover" />
+                    ) : (
+                      video.channel.name.charAt(0)
+                    )}
                   </div>
                   <div className="flex-1">
                     <h3 className="font-medium text-text-primary">
@@ -180,14 +206,17 @@ export function VideoDetailPage() {
                       href={video.channel.youtube_channel_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 bg-bg-tertiary rounded-lg hover:bg-accent-primary transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-red-600 hover:text-red-700"
                     >
-                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8-4.003z" />
-                      </svg>
+                      <img 
+                        src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png" 
+                        alt="YouTube" 
+                        className="w-5 h-4 object-contain"
+                      />
                     </a>
                   )}
-                </div>
+                </Link>
               )}
             </div>
           </div>

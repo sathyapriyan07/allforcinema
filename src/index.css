@@ -15,6 +15,10 @@
     --text-muted: #737373;
     --border-subtle: #333333;
   }
+  
+  html {
+    font-size: 14px;
+  }
 }
 
 * {
@@ -29,13 +33,13 @@ body {
   margin: 0;
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Sora', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 ::-webkit-scrollbar {
