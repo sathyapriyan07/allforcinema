@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAdminCategories } from '../../hooks/useVideos';
 import { slugify } from '../../lib/utils';
+import { MaterialSymbol } from '../../components/ui/MaterialSymbol';
 import type { Category } from '../../types';
 
 export function AdminCategoriesPage() {
@@ -79,7 +80,7 @@ export function AdminCategoriesPage() {
               />
               
               {category.icon && (
-                <span className="text-4xl mb-2 block">{category.icon}</span>
+                <MaterialSymbol name={category.icon} className="text-4xl mb-2" />
               )}
               
               <h3 className="font-heading font-semibold text-text-primary">
@@ -257,15 +258,31 @@ function CategoryForm({ categoryId, onClose }: CategoryFormProps) {
           {/* Icon */}
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-2">
-              Icon (emoji)
+              Icon (Material Symbol)
             </label>
-            <input
-              type="text"
+            <select
               value={icon}
               onChange={(e) => setIcon(e.target.value)}
-              placeholder="🎬"
-              className="w-full px-4 py-3 bg-bg-tertiary rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent-primary"
-            />
+              className="w-full px-4 py-3 bg-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            >
+              <option value="">Select icon</option>
+              <option value="movie">movie</option>
+              <option value="music_note">music_note</option>
+              <option value="theaters">theaters</option>
+              <option value="live_tv">live_tv</option>
+              <option value="sports">sports</option>
+              <option value="sports_esports">sports_esports</option>
+              <option value="play_circle">play_circle</option>
+              <option value="videocam">videocam</option>
+              <option value="audiotrack">audiotrack</option>
+              <option value="movie_filter">movie_filter</option>
+              <option value="auto_awesome">auto_awesome</option>
+              <option value="star">star</option>
+              <option value="favorite">favorite</option>
+              <option value="trending_up">trending_up</option>
+              <option value="new_releases">new_releases</option>
+              <option value="theater_comedy">theater_comedy</option>
+            </select>
           </div>
           
           {/* Preview */}
@@ -274,7 +291,7 @@ function CategoryForm({ categoryId, onClose }: CategoryFormProps) {
               Preview
             </label>
             <div className="flex items-center gap-3 p-4 bg-bg-tertiary rounded-xl">
-              {icon && <span className="text-3xl">{icon}</span>}
+              {icon && <MaterialSymbol name={icon} className="text-3xl" />}
               <div>
                 <h3 className="font-medium text-text-primary">{name || 'Category Name'}</h3>
                 <span className="text-sm text-text-muted">/{autoSlug || 'slug'}</span>

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useVideos, usePlaylists, useCategories } from '../hooks/useVideos';
 import { VideoCard, VideoCardSkeleton } from '../components/video/VideoCard';
+import { MaterialSymbol } from '../components/ui/MaterialSymbol';
 import { PlaylistCard, PlaylistCardSkeleton } from '../components/playlist/PlaylistCard';
 import type { Video, Playlist, Category } from '../types';
 
@@ -79,7 +80,7 @@ export function HomePage() {
                   className="group relative p-6 rounded-xl bg-bg-secondary card-glow hover:scale-105 transition-all duration-300 text-center"
                 >
                   {category.icon && (
-                    <span className="text-4xl mb-2 block">{category.icon}</span>
+                    <MaterialSymbol name={category.icon} className="text-4xl mb-2" />
                   )}
                   <h3 className="font-heading font-semibold text-text-primary group-hover:text-accent-primary transition-colors">
                     {category.name}
@@ -101,11 +102,13 @@ export function HomePage() {
                 View All
               </Link>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 md:grid md:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 md:overflow-visible md:mx-0 md:px-0 md:pb-0">
               {loadingFeatured
-                ? Array.from({ length: 6 }).map((_, i) => <VideoCardSkeleton key={i} />)
+                ? Array.from({ length: 6 }).map((_, i) => <div key={i} className="w-[160px] md:w-auto flex-shrink-0"><VideoCardSkeleton /></div>)
                 : featured.slice(0, 6).map((video: Video) => (
-                    <VideoCard key={video.id} video={video} />
+                    <div key={video.id} className="w-[160px] md:w-auto flex-shrink-0">
+                      <VideoCard video={video} />
+                    </div>
                   ))}
             </div>
           </section>
@@ -170,11 +173,13 @@ export function HomePage() {
                 View All
               </Link>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 md:grid md:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 md:overflow-visible md:mx-0 md:px-0 md:pb-0">
               {loadingRecent
-                ? Array.from({ length: 10 }).map((_, i) => <VideoCardSkeleton key={i} />)
+                ? Array.from({ length: 10 }).map((_, i) => <div key={i} className="w-[160px] md:w-auto flex-shrink-0"><VideoCardSkeleton /></div>)
                 : recent.slice(0, 10).map((video: Video) => (
-                    <VideoCard key={video.id} video={video} />
+                    <div key={video.id} className="w-[160px] md:w-auto flex-shrink-0">
+                      <VideoCard video={video} />
+                    </div>
                   ))}
             </div>
           </section>

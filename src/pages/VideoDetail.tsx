@@ -226,11 +226,17 @@ export function VideoDetailPage() {
             <h2 className="text-xl font-heading font-bold text-text-primary">
               Related Videos
             </h2>
-            <div className="space-y-4">
+            <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:pb-0">
               {loadingRelated
-                ? Array.from({ length: 6 }).map((_, i) => <VideoCardSkeleton key={i} />)
+                ? Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="w-[280px] md:w-full flex-shrink-0">
+                      <VideoCardSkeleton />
+                    </div>
+                  ))
                 : otherVideos.map((v) => (
-                    <VideoCard key={v.id} video={v} />
+                    <div key={v.id} className="w-[280px] md:w-full flex-shrink-0">
+                      <VideoCard video={v} />
+                    </div>
                   ))}
             </div>
           </div>

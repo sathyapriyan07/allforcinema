@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useVideos } from '../hooks/useVideos';
 import { useCategories } from '../hooks/useVideos';
 import { VideoCard, VideoCardSkeleton } from '../components/video/VideoCard';
+import { MaterialSymbol } from '../components/ui/MaterialSymbol';
 
 export function CategoriesPage() {
   const { categories, loading, error } = useCategories();
@@ -46,7 +47,7 @@ export function CategoriesPage() {
                 className="group relative p-8 rounded-xl bg-bg-secondary card-glow hover:scale-105 transition-all duration-300 text-center"
               >
                 {category.icon && (
-                  <span className="text-5xl mb-3 block">{category.icon}</span>
+                  <MaterialSymbol name={category.icon} className="text-5xl mb-3" />
                 )}
                 <h3 className="font-heading font-semibold text-lg text-text-primary group-hover:text-white transition-colors">
                   {category.name}
@@ -97,7 +98,7 @@ export function CategoryPage() {
     <div className="min-h-screen pt-24">
       <div className="max-w-[1800px] mx-auto px-4 md:px-8 py-8">
         <div className="mb-8 flex items-center gap-4">
-          {category.icon && <span className="text-5xl">{category.icon}</span>}
+          {category.icon && <MaterialSymbol name={category.icon} className="text-5xl" />}
           <div>
             <h1 className="text-4xl font-heading font-bold text-text-primary">
               {category.name}
