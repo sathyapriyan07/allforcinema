@@ -19,8 +19,8 @@ export default {
         'border-subtle': '#333333',
       },
       fontFamily: {
-        heading: ['Sora', 'sans-serif'],
-        body: ['DM Sans', 'sans-serif'],
+        heading: ['Inter', 'sans-serif'],
+        body: ['Inter', 'sans-serif'],
       },
       maxWidth: {
         '1800': '1800px',
