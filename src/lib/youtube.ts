@@ -136,6 +136,53 @@ export function parseDuration(duration: string): number {
   return parts[0] || 0;
 }
 
-export function getYouTubeSearchUrl(query: string): string {
-  return `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+export interface YouTubeSearchResult {
+  videoId: string;
+  title: string;
+  author: string;
+  thumbnail: string;
+  duration: string;
+}
+
+const INVIDIOUS_INSTANCES = [
+  'https://invidious.nerdvpn.de',
+  'https://inv.nadeko.net',
+  'https://yewtu.be',
+];
+
+const CORS_PROXIES = [
+  'https://corsproxy.io/?',
+  'https://api.allorigins.win/raw?url=',
+];
+
+export async function searchYouTube(query: string): Promise<YouTubeSearchResult[]> {
+  for (const instance of INVIDIOUS_INSTANCES) {
+    try {
+      let url = `${instance}/search?q=${encodeURIComponent(query)}&format=json`;
+      
+      for (const proxy of CORS_PROXIES) {
+        try {
+          const proxiedUrl = proxy + encodeURIComponent(url);
+          const response = await fetch(proxiedUrl);
+          if (response.ok) {
+            const data = await response.json();
+            return data
+              .filter((item: any) => item.type === 'video')
+              .map((item: any) => ({
+                videoId: item.videoId,
+                title: item.title,
+                author: item.author,
+                thumbnail: item.thumbnails?.[0]?.url || `https://img.youtube.com/vi/${item.videoId}/mqdefault.jpg`,
+                duration: item.lengthSeconds ? formatDuration(item.lengthSeconds) : '',
+              }));
+          }
+        } catch {
+          continue;
+        }
+      }
+    } catch {
+      continue;
+    }
+  }
+  return [];
 }
