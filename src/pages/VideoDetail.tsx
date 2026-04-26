@@ -161,7 +161,7 @@ export function VideoDetailPage() {
                     {showDescription ? 'Hide Description' : 'Show Description'}
                   </button>
                   {showDescription && (
-                    <p className="mt-2 text-text-secondary leading-relaxed">
+                    <p className="mt-2 text-left text-text-secondary leading-relaxed whitespace-pre-wrap break-words">
                       {video.description}
                     </p>
                   )}
@@ -226,13 +226,13 @@ export function VideoDetailPage() {
             <h2 className="text-xl font-heading font-bold text-text-primary">
               Related Videos
             </h2>
-            <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 -mx-4 px-4 md:block md:overflow-visible md:pb-0 md:mx-0 md:px-0 md:space-y-4">
+            <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 -mx-4 px-4 lg:block lg:overflow-visible lg:pb-0 lg:mx-0 lg:px-0 lg:space-y-4">
               {loadingRelated
                 ? Array.from({ length: 6 }).map((_, i) => (
-                    <VideoCardSkeleton key={i} className="w-64 flex-none md:w-full" />
+                    <VideoCardSkeleton key={i} className="w-64 flex-none lg:w-full" />
                   ))
                 : otherVideos.map((v) => (
-                    <VideoCard key={v.id} video={v} className="w-64 flex-none md:w-full" />
+                    <VideoCard key={v.id} video={v} className="w-64 flex-none lg:w-full" />
                   ))
               }
             </div>
